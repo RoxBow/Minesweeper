@@ -7,3 +7,8 @@ export const CLICK = {
   LEFT: 'LEFT',
   RIGHT: 'RIGHT'
 };
+
+export const STATE_GAME = {
+  WIN: 'WIN',
+  LOSE: 'LOSE'
+};

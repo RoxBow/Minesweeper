@@ -10,7 +10,7 @@ const App = () => {
   useEffect(() => {
     if (mine >= size * size || !size) setSize(Number(window.prompt('Nombre de case ?', 10)));
 
-    if (!mine) setMine(Number(window.prompt('Nombre de mine ?', 8)));
+    if (!mine) setMine(Number(window.prompt('Nombre de mine ?', 12)));
   }, [size, mine]);
 
   return (
@@ -18,7 +18,7 @@ const App = () => {
       <header>
         <h1>Minesweeper</h1>
         <button className="btn-debug" onClick={() => setDebugging(!isDebugging)}>
-          Mode debug
+          Debug mode
         </button>
       </header>
 

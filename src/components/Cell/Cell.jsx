@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Cell.scss';
 import { ReactComponent as Flag } from '../../assets/img/flag.svg';
 import { ReactComponent as Bomb } from '../../assets/img/bomb.svg';
@@ -8,7 +8,8 @@ type CellProps = {
   isBomb: Boolean,
   isHidden: Boolean,
   value: Number,
-  showCell: Function
+  showCell: Function,
+  setFlag: Function
 };
 
 const handleClick = e => {
@@ -19,27 +20,23 @@ const handleClick = e => {
   }
 };
 
-const Cell = ({ isBomb, isHidden, showCell, value }: CellProps) => {
-  const [isFlag, setFlag] = useState(false);
-
-  return (
-    <td className="cell">
-      {isFlag || !isHidden ? (
-        isFlag ? (
-          <Flag />
-        ) : isBomb ? (
-          <Bomb />
-        ) : (
-          <span>{value}</span>
-        )
+const Cell = ({ isBomb, isHidden, showCell, setFlag, isFlag, value }: CellProps) => (
+  <td className="cell">
+    {isFlag || !isHidden ? (
+      isFlag ? (
+        <Flag />
+      ) : isBomb ? (
+        <Bomb />
       ) : (
-        <button
-          onContextMenu={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag(true))}
-          onClick={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag(true))}
-        />
-      )}
-    </td>
-  );
-};
+        <span>{value}</span>
+      )
+    ) : (
+      <button
+        onContextMenu={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag())}
+        onClick={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag())}
+      />
+    )}
+  </td>
+);
 
 export default Cell;

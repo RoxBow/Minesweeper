@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 import './Grid.scss';
 import Cell from '../Cell/Cell';
-import { TYPE_CELL } from '../../constants';
+import { TYPE_CELL, STATE_GAME } from '../../constants';
 import { randomNumber, findAdjacents } from '../../helpers';
 
 type GridProps = {
@@ -37,10 +37,38 @@ const reducer = (state, action) => {
   }
 };
 
-const discover = (cell, grid, dispatch) => {
+const getStateGame = grid => {
+  let stateGame = STATE_GAME.WIN;
+  
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid.length; y++) {
+      const cell = grid[x][y];
+
+      if(cell.isHidden && !(cell.value === TYPE_CELL.BOMB) && !cell.isFlag){
+        stateGame = null;
+        break;
+      } else if(cell.isHidden && !(cell.value === TYPE_CELL.BOMB) && cell.isFlag){
+        stateGame = STATE_GAME.LOSE;
+        break;
+      } else {
+        continue;
+      }
+    }
+  }
+
+  return stateGame;
+}
+
+const setFlag = (cell, grid, dispatch) => {
+  grid[cell.x][cell.y].isFlag = true;
+  dispatch({ type: 'set', grid });
+}
+
+const showCell = (cell, grid, dispatch) => {
+
   // losing case
   if(cell.value === TYPE_CELL.BOMB) {
-    alert('C\'est fini, tu as cliqué sur une bombe');
+    alert('You clicked on a bomb, sorry');
     window.location.reload();
     return;
   }
@@ -48,15 +76,26 @@ const discover = (cell, grid, dispatch) => {
   grid[cell.x][cell.y].isHidden = false;
 
   const adjacentCell = findAdjacents(grid, cell.x, cell.y);
-  const cleanAdjacentCell = adjacentCell.filter(c => c.value >= 0 && c.isHidden);
+  const adjacentCellToShow = adjacentCell.filter(c => c.value >= 0 && c.isHidden && !c.isFlag);
 
-  cleanAdjacentCell.forEach(n => {
-    grid[n.x][n.y].isHidden = false;
+  adjacentCellToShow.forEach(c => {
+    grid[c.x][c.y].isHidden = false;
 
-    if (n.value === 0) discover(n, grid, dispatch);
+    if (c.value === 0) showCell(c, grid, dispatch);
   });
 
   dispatch({ type: 'set', grid });
+
+  const stateGame = getStateGame(grid);
+
+  if(stateGame === STATE_GAME.WIN){
+    alert('WINNEEEERRR !!!!!');
+  } else if(stateGame === STATE_GAME.LOSE){
+    alert('Flag(s) at the wrong position, it\'s lose !');
+    window.location.reload();
+  } else {
+    return;
+  }
 };
 
 const generateRandomBomb = (mine, size) => {
@@ -66,6 +105,7 @@ const generateRandomBomb = (mine, size) => {
     const x = randomNumber(0, size);
     const y = randomNumber(0, size);
 
+    // unique position bomb
     if (!randomBomb.some(bomb => bomb.x === x && bomb.y === y)) {
       randomBomb.push({ x, y });
     }
@@ -125,8 +165,10 @@ const Grid = ({ size = 10, mine = 1, isDebugging }: GridProps) => {
                 key={j}
                 value={col.value}
                 isBomb={col.value === TYPE_CELL.BOMB}
+                isFlag={col.isFlag}
                 isHidden={col.isHidden && !isDebugging}
-                showCell={() => discover(col, grid, dispatch)}
+                showCell={() => showCell(col, grid, dispatch)}
+                setFlag={() => setFlag(col, grid, dispatch)}
               />
             ))}
           </tr>
