@@ -38,6 +38,13 @@ const reducer = (state, action) => {
 };
 
 const discover = (cell, grid, dispatch) => {
+  // losing case
+  if(cell.value === TYPE_CELL.BOMB) {
+    alert('C\'est fini, tu as cliqué sur une bombe');
+    window.location.reload();
+    return;
+  }
+
   grid[cell.x][cell.y].isHidden = false;
 
   const adjacentCell = findAdjacents(grid, cell.x, cell.y);
