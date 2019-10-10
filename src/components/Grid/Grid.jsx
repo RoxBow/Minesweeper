@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react';
 import './Grid.scss';
 import Cell from '../Cell/Cell';
 import { TYPE_CELL } from '../../constants';
-import { randomNumber, findingNeighbors } from '../../helpers';
+import { randomNumber, findAdjacents } from '../../helpers';
 
 type GridProps = {
   isDebugging: Boolean,
@@ -14,10 +14,10 @@ const initState = {
   grid: []
 };
 
-const increaseValue = (grid, cell, randomBomb) => {
-  const { x, y } = cell;
+const increaseValue = (cell, randomBomb) => {
+  const { x, y } = cell;
 
-  const matchBomb = randomBomb.filter(
+  const matchedBomb = randomBomb.filter(
     ({ x: bombX, y: bombY }) =>
       (x - 1 === bombX && bombY >= y - 1 && bombY <= y + 1) ||
       (x + 1 === bombX && bombY >= y - 1 && bombY <= y + 1) ||
@@ -25,7 +25,7 @@ const increaseValue = (grid, cell, randomBomb) => {
       (y + 1 === bombY && bombX === x)
   );
 
-  return matchBomb.length;
+  return matchedBomb.length;
 };
 
 const reducer = (state, action) => {
@@ -40,26 +40,37 @@ const reducer = (state, action) => {
 const discover = (cell, grid, dispatch) => {
   grid[cell.x][cell.y].isHidden = false;
 
-  const neighbors = findingNeighbors(grid, cell.x, cell.y);
-  const neighborsWithoutBomb = neighbors.filter(n => n.value >= 0 && n.isHidden);
+  const adjacentCell = findAdjacents(grid, cell.x, cell.y);
+  const cleanAdjacentCell = adjacentCell.filter(c => c.value >= 0 && c.isHidden);
 
-  neighborsWithoutBomb.forEach(n => {
+  cleanAdjacentCell.forEach(n => {
     grid[n.x][n.y].isHidden = false;
 
-    if(n.value === 0) discover(n, grid, dispatch);
+    if (n.value === 0) discover(n, grid, dispatch);
   });
 
   dispatch({ type: 'set', grid });
 };
 
-const generateGrid = (size, mine, dispatch) => {
-  let grid = [];
+const generateRandomBomb = (mine, size) => {
   let randomBomb = [];
 
-  // generate random bomb
-  for (let j = 0; j < mine; j++) {
-    randomBomb.push({ x: randomNumber(0, size), y: randomNumber(0, size) });
+  while (randomBomb.length < mine) {
+    const x = randomNumber(0, size);
+    const y = randomNumber(0, size);
+
+    if (!randomBomb.some(bomb => bomb.x === x && bomb.y === y)) {
+      randomBomb.push({ x, y });
+    }
   }
+
+  return randomBomb;
+};
+
+const generateGrid = (size, mine, dispatch) => {
+  let grid = [];
+
+  const randomBomb = generateRandomBomb(mine, size);
 
   for (let row = 0; row < size; row++) {
     grid.push([]);
@@ -72,14 +83,14 @@ const generateGrid = (size, mine, dispatch) => {
         isHidden: true
       };
 
-      // insert bomb
+      // assign bomb
       if (randomBomb.some(({ x, y }) => y === col && x === row)) {
         cell.value = TYPE_CELL.BOMB;
       }
 
       // assign value
       if (cell.value !== TYPE_CELL.BOMB) {
-        cell.value = increaseValue(grid, { x: row, y: col }, randomBomb);
+        cell.value = increaseValue(cell, randomBomb);
       }
 
       grid[row][col] = cell;
@@ -91,7 +102,7 @@ const generateGrid = (size, mine, dispatch) => {
 
 const Grid = ({ size = 10, mine = 1, isDebugging }: GridProps) => {
   const [state, dispatch] = useReducer(reducer, initState);
-  const { grid } = state;
+  const { grid } = state;
 
   useEffect(() => {
     generateGrid(size, mine, dispatch);

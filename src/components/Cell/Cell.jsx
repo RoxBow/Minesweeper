@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Cell.scss';
 import { ReactComponent as Flag } from '../../assets/img/flag.svg';
 import { ReactComponent as Bomb } from '../../assets/img/bomb.svg';
-import { CLICK } from '../../constants';
+import { CLICK } from '../../constants';
 
 type CellProps = {
   isBomb: Boolean,

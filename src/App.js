@@ -4,16 +4,13 @@ import './App.scss';
 
 const App = () => {
   const [isDebugging, setDebugging] = useState(false);
-  const [size, setSize] = useState(10);
-  const [mine, setMine] = useState(8);
+  const [size, setSize] = useState(0);
+  const [mine, setMine] = useState(0);
 
   useEffect(() => {
-    setSize(Number(window.prompt('Nombre de case ?', 10)));
-    setMine(Number(window.prompt('Nombre de mine ?', 8)));
+    if (mine >= size * size || !size) setSize(Number(window.prompt('Nombre de case ?', 10)));
 
-    if (mine >= (size * size)) {
-      setSize(Number(window.prompt('Nombre de case ?', 10)));
-    }
+    if (!mine) setMine(Number(window.prompt('Nombre de mine ?', 8)));
   }, [size, mine]);
 
   return (
