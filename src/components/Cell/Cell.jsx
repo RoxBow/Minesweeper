@@ -4,14 +4,6 @@ import { ReactComponent as Flag } from '../../assets/img/flag.svg';
 import { ReactComponent as Bomb } from '../../assets/img/bomb.svg';
 import { CLICK } from '../../constants';
 
-type CellProps = {
-  isBomb: Boolean,
-  isHidden: Boolean,
-  value: Number,
-  showCell: Function,
-  setFlag: Function
-};
-
 const handleClick = e => {
   if (e.button === 0) {
     return CLICK.LEFT;
@@ -20,25 +12,35 @@ const handleClick = e => {
   }
 };
 
-const Cell = ({ isBomb, isHidden, showCell, setFlag, isFlag, value }: CellProps) => (
+interface CellProps {
+  isBomb: boolean,
+  isHidden: boolean,
+  value: number,
+  showCell: void,
+  toggleFlag: void
+}
+
+const Cell = ({ isBomb, isHidden, showCell, toggleFlag, isFlag, value }: CellProps) => (
   <td className="cell">
+    <div>
     {!isHidden ? (
       isBomb ? (
         <Bomb />
       ) : (
-        <span>{value}</span>
+        <span className="value">{value}</span>
       )
     ) : isFlag ? (
-      <button onContextMenu={() => setFlag()}>
+      <button onContextMenu={toggleFlag} className="btn-flag">
         <Flag />
       </button>
     ) : (
       <button
         className="btn-cell-hidden"
-        onContextMenu={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag())}
-        onClick={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag())}
+        onContextMenu={e => (handleClick(e) === CLICK.LEFT ? showCell() : toggleFlag())}
+        onClick={e => (handleClick(e) === CLICK.LEFT ? showCell() : toggleFlag())}
       />
     )}
+    </div>
   </td>
 );
 

@@ -18,20 +18,31 @@
     h1 {
       font-size: 2rem;
       margin-bottom: 1rem;
-      font-weight: bold;
+      font-weight: 900;
+      text-transform: uppercase;
     }
 
-    .btn-debug {
-      background-color: $secondColor;
-      border-radius: 4px;
-      padding: .5rem .8rem;
-      color: #fff;
-      font-weight: 600;
+    .group-action {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
 
-      &:hover {
-        opacity: .8;
+      button {
+        background-color: $secondColor;
+        border-radius: 4px;
+        padding: 0.5rem 0.8rem;
+        margin: 0 0.5em;
+        color: #fff;
+        font-weight: 600;
+
+        &:first-child {
+          background-color: $mainColor;
+        }
+
+        &:hover {
+          opacity: 0.8;
+        }
       }
     }
   } // header
-
 } // app

@@ -2,13 +2,22 @@
 @import './reset';
 @import './variables';
 
-html, body {
+html,
+body, 
+#root {
+  height: 100%;
+  width: 100%;
   padding: 0;
   margin: 0;
   font-family: $mainFont, 'Arial', sans-serif;
 }
 
-button {
+input, button {
   background: none;
   border: none;
+  font-family: $mainFont, 'Arial', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
 }

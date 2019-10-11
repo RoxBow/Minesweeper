@@ -4,12 +4,6 @@ import Cell from '../Cell/Cell';
 import { TYPE_CELL, STATE_GAME } from '../../constants';
 import { randomNumber, findAdjacents } from '../../helpers';
 
-type GridProps = {
-  isDebugging: Boolean,
-  size: Number,
-  mine: Number
-};
-
 const initState = {
   grid: []
 };
@@ -59,7 +53,7 @@ const getStateGame = grid => {
   return stateGame;
 };
 
-const setFlag = (cell, grid, dispatch, isFlag) => {
+const toggleFlag = (cell, grid, dispatch, isFlag) => {
   grid[cell.x][cell.y].isFlag = !isFlag;
   dispatch({ type: 'set', grid });
 };
@@ -146,7 +140,13 @@ const generateGrid = (size, mine, dispatch) => {
   dispatch({ type: 'set', grid });
 };
 
-const Grid = ({ size = 10, mine = 1, isDebugging }: GridProps) => {
+interface GridProps {
+  isDebugging: boolean,
+  size: number,
+  mine: number
+};
+
+const Grid = ({ size, mine, isDebugging }: GridProps) => {
   const [state, dispatch] = useReducer(reducer, initState);
   const { grid } = state;
 
@@ -167,7 +167,7 @@ const Grid = ({ size = 10, mine = 1, isDebugging }: GridProps) => {
                 isFlag={cell.isFlag}
                 isHidden={cell.isHidden && !isDebugging}
                 showCell={() => showCell(cell, grid, dispatch)}
-                setFlag={() => setFlag(cell, grid, dispatch, cell.isFlag)}
+                toggleFlag={() => toggleFlag(cell, grid, dispatch, cell.isFlag)}
               />
             ))}
           </tr>

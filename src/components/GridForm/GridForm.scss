@@ -1,0 +1,50 @@
+@import '../../styles/variables';
+
+.grid-form {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  .intro {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+  }
+
+  .error {
+    color: red;
+    font-size: 1rem;
+    margin: 1rem 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin-bottom: 1rem;
+  }
+
+  label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  input[type='number'] {
+    border: 1px solid #000;
+    border-radius: 4px;
+    padding: 0.4rem;
+    font-size: 1.2rem;
+  }
+
+  input[type='submit'] {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: $mainColor;
+    color: #fff;
+  }
+}
