@@ -22,16 +22,19 @@ const handleClick = e => {
 
 const Cell = ({ isBomb, isHidden, showCell, setFlag, isFlag, value }: CellProps) => (
   <td className="cell">
-    {isFlag || !isHidden ? (
-      isFlag ? (
-        <Flag />
-      ) : isBomb ? (
+    {!isHidden ? (
+      isBomb ? (
         <Bomb />
       ) : (
         <span>{value}</span>
       )
+    ) : isFlag ? (
+      <button onContextMenu={() => setFlag()}>
+        <Flag />
+      </button>
     ) : (
       <button
+        className="btn-cell-hidden"
         onContextMenu={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag())}
         onClick={e => (handleClick(e) === CLICK.LEFT ? showCell() : setFlag())}
       />

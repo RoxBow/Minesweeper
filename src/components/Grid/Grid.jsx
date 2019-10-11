@@ -14,7 +14,7 @@ const initState = {
   grid: []
 };
 
-const increaseValue = (cell, randomBomb) => {
+const increaseValueCell = (cell, randomBomb) => {
   const { x, y } = cell;
 
   const matchedBomb = randomBomb.filter(
@@ -39,15 +39,15 @@ const reducer = (state, action) => {
 
 const getStateGame = grid => {
   let stateGame = STATE_GAME.WIN;
-  
+
   for (let x = 0; x < grid.length; x++) {
     for (let y = 0; y < grid.length; y++) {
       const cell = grid[x][y];
 
-      if(cell.isHidden && !(cell.value === TYPE_CELL.BOMB) && !cell.isFlag){
+      if (cell.isHidden && !(cell.value === TYPE_CELL.BOMB) && !cell.isFlag) {
         stateGame = null;
         break;
-      } else if(cell.isHidden && !(cell.value === TYPE_CELL.BOMB) && cell.isFlag){
+      } else if (cell.isHidden && !(cell.value === TYPE_CELL.BOMB) && cell.isFlag) {
         stateGame = STATE_GAME.LOSE;
         break;
       } else {
@@ -57,17 +57,16 @@ const getStateGame = grid => {
   }
 
   return stateGame;
-}
+};
 
-const setFlag = (cell, grid, dispatch) => {
-  grid[cell.x][cell.y].isFlag = true;
+const setFlag = (cell, grid, dispatch, isFlag) => {
+  grid[cell.x][cell.y].isFlag = !isFlag;
   dispatch({ type: 'set', grid });
-}
+};
 
 const showCell = (cell, grid, dispatch) => {
-
   // losing case
-  if(cell.value === TYPE_CELL.BOMB) {
+  if (cell.value === TYPE_CELL.BOMB) {
     alert('You clicked on a bomb, sorry');
     window.location.reload();
     return;
@@ -88,10 +87,10 @@ const showCell = (cell, grid, dispatch) => {
 
   const stateGame = getStateGame(grid);
 
-  if(stateGame === STATE_GAME.WIN){
+  if (stateGame === STATE_GAME.WIN) {
     alert('WINNEEEERRR !!!!!');
-  } else if(stateGame === STATE_GAME.LOSE){
-    alert('Flag(s) at the wrong position, it\'s lose !');
+  } else if (stateGame === STATE_GAME.LOSE) {
+    alert("Flag(s) at the wrong position, it's lose !");
     window.location.reload();
   } else {
     return;
@@ -137,7 +136,7 @@ const generateGrid = (size, mine, dispatch) => {
 
       // assign value
       if (cell.value !== TYPE_CELL.BOMB) {
-        cell.value = increaseValue(cell, randomBomb);
+        cell.value = increaseValueCell(cell, randomBomb);
       }
 
       grid[row][col] = cell;
@@ -160,15 +159,15 @@ const Grid = ({ size = 10, mine = 1, isDebugging }: GridProps) => {
       <tbody>
         {state.grid.map((row, i) => (
           <tr key={i}>
-            {row.map((col, j) => (
+            {row.map((cell, j) => (
               <Cell
                 key={j}
-                value={col.value}
-                isBomb={col.value === TYPE_CELL.BOMB}
-                isFlag={col.isFlag}
-                isHidden={col.isHidden && !isDebugging}
-                showCell={() => showCell(col, grid, dispatch)}
-                setFlag={() => setFlag(col, grid, dispatch)}
+                value={cell.value}
+                isBomb={cell.value === TYPE_CELL.BOMB}
+                isFlag={cell.isFlag}
+                isHidden={cell.isHidden && !isDebugging}
+                showCell={() => showCell(cell, grid, dispatch)}
+                setFlag={() => setFlag(cell, grid, dispatch, cell.isFlag)}
               />
             ))}
           </tr>
