@@ -47,6 +47,7 @@ const GridForm: FunctionComponent<GridFormProps> = ({ handleSubmit }) => {
           value={mine}
           type="number"
           min={1}
+          max={size * size}
           onChange={e => setMine(Number(e.target.value))}
         />
       </div>

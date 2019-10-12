@@ -27,7 +27,12 @@ const App = () => {
       {!size ? (
         <GridForm handleSubmit={setParametersGrid} />
       ) : (
-        <Grid size={size} mine={mine} isDebugging={isDebugging} restartGame={() => setParametersGrid(0, 0)} />
+        <Grid
+          size={size}
+          mine={mine}
+          isDebugging={isDebugging}
+          restartGame={() => setParametersGrid(0, 0)}
+        />
       )}
     </div>
   );

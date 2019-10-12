@@ -78,7 +78,12 @@ const toggleFlag = (
   dispatch({ type: 'set', grid });
 };
 
-const showCell = (cell: Cell, grid: GridType, dispatch: Dispatch<ActionType>, restartGame: () => void) => {
+const showCell = (
+  cell: Cell,
+  grid: GridType,
+  dispatch: Dispatch<ActionType>,
+  restartGame: () => void
+) => {
   // losing case
   if (cell.value === TYPE_CELL.BOMB) {
     alert('You clicked on a bomb, sorry');
