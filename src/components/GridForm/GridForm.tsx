@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import './GridForm.scss';
 
-interface GridProps {
-  handleSubmit: void
-};
+interface GridFormProps {
+  handleSubmit: (size: number, mine: number) => void;
+}
 
-const GridForm = ({ handleSubmit }: GridFormProps) => {
-  const [size, setSize] = useState(10);
-  const [mine, setMine] = useState(0);
-  const [error, setError] = useState(null);
+const GridForm: FunctionComponent<GridFormProps> = ({ handleSubmit }) => {
+  const [size, setSize] = useState<number>(10);
+  const [mine, setMine] = useState<number>(10);
+  const [error, setError] = useState<string>('');
 
-  const onSubmit = e => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (size < 1 || !size) {
@@ -34,7 +34,9 @@ const GridForm = ({ handleSubmit }: GridFormProps) => {
           id="field-size"
           value={size}
           type="number"
-          onChange={e => setSize(e.target.value)}
+          min={1}
+          max={31}
+          onChange={e => setSize(Number(e.target.value))}
         />
       </div>
       <div>
@@ -44,7 +46,8 @@ const GridForm = ({ handleSubmit }: GridFormProps) => {
           id="field-mine"
           value={mine}
           type="number"
-          onChange={e => setMine(e.target.value)}
+          min={1}
+          onChange={e => setMine(Number(e.target.value))}
         />
       </div>
       {error && <p className="error">{error}</p>}
